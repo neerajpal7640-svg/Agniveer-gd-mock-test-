@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>90 Days Challenge - Neeraj Pal</title>
+    <style>
+        /* बैकग्राउंड और बॉडी स्टाइलिंग */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* बैकग्राउंड को धुंधला/डार्क करने के लिए ओवरले */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 90%;
+            max-width: 800px;
+            margin: 30px auto;
+            text-align: center;
+            background: rgba(20, 20, 20, 0.75);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* नीरज पाल का स्टाइलिश डिज़ाइन हेडर */
+        .designer-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #FF9933, #FFFFFF, #128807);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .sub-title {
+            font-size: 1.2rem;
+            color: #ddd;
+            margin-bottom: 25px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+
+        /* कार्ड्स ग्रिड */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        /* स्क्रॉलबार स्टाइल */
+        .grid-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .grid-container::-webkit-scrollbar-thumb {
+            background: #FF9933;
+            border-radius: 10px;
+        }
+
+        /* दिन का कार्ड स्टाइल */
+        .day-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .day-card.unlocked {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.2);
+            cursor: pointer;
+        }
+
+        .day-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(80%);
+        }
+
+        .day-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .status-badge.unlocked {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .status-badge.locked {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        /* मॉडल (पॉपअप) स्टाइल */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #222;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid #444;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+
+        .modal input {
+            width: 80%;
+            padding: 10px;
+            margin: 15px 0;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #555;
+            text-align: center;
+        }
+
+        .modal button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            background: #28a745;
+            color: white;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .modal button.close-btn {
+            background: #dc3545;
+        }
+
+        .percentage-display {
+            font-size: 0.9rem;
+            color: #ffca28;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay"></div>
+
+    <div class="container">
+        <!-- बड़े अक्षरों में आपका नाम -->
+        <div class="designer-title">NEERAJ PAL</div>
+        <div class="sub-title">90 Days Target Challenge</div>
+
+        <!-- 90 दिनों की ग्रिड -->
+        <div class="grid-container" id="gridContainer"></div>
+    </div>
+
+    <!-- मार्क्स/परसेंटेज इनपुट करने के लिए पॉपअप -->
+    <div class="modal" id="scoreModal">
+        <div class="modal-content">
+            <h3 id="modalDayTitle">Day Performance</h3>
+            <p>अगला दिन खोलने के लिए 70% या उससे अधिक अंक दर्ज करें:</p>
+            <input type="number" id="percentageInput" placeholder="Enter Percentage (0-100)" min="0" max="100">
+            <br>
+            <button onclick="submitScore()">Submit Score</button>
+            <button class="close-btn" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const totalDays = 90;
+        let currentActiveDay = 1;
+
+        // लोकल स्टोरेज से सेव डेटा लोड करना
+        let userProgress = JSON.parse(localStorage.getItem('neeraj_challenge_progress')) || {
+            unlockedUpTo: 1,
+            scores: {}
+        };
+
+        function renderDays() {
+            const gridContainer = document.getElementById('gridContainer');
+            gridContainer.innerHTML = '';
+
+            for (let i = 1; i <= totalDays; i++) {
+                const card = document.createElement('div');
+                const isUnlocked = i <= userProgress.unlockedUpTo;
+                
+                card.className = `day-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+                
+                let scoreText = userProgress.scores[i] ? `<div class="percentage-display">Score: ${userProgress.scores[i]}%</div>` : '';
+
+                card.innerHTML = `
+                    <div class="day-title">Day ${i}</div>
+                    <span class="status-badge ${isUnlocked ? 'unlocked' : 'locked'}">
+                        ${isUnlocked ? 'Unlocked' : 'Locked'}
+                    </span>
+                    ${scoreText}
+                `;
+
+                if (isUnlocked) {
+                    card.onclick = () => openModal(i);
+                }
+
+                gridContainer.appendChild(card);
+            }
+        }
+
+        function openModal(day) {
+            currentActiveDay = day;
+            document.getElementById('modalDayTitle').innerText = `Day ${day} Marks Entry`;
+            document.getElementById('percentageInput').value = userProgress.scores[day] || '';
+            document.getElementById('scoreModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('scoreModal').style.display = 'none';
+        }
+
+        function submitScore() {
+            const inputVal = parseFloat(document.getElementById('percentageInput').value);
+
+            if (isNaN(inputVal) || inputVal < 0 || inputVal > 100) {
+                alert('कृपया 0 से 100 के बीच सही प्रतिशत दर्ज करें!');
+                return;
+            }
+
+            // स्कोर सेव करें
+            userProgress.scores[currentActiveDay] = inputVal;
+
+            // अगर 70% या उससे ज्यादा है, तो अगला दिन अनलॉक करें
+            if (inputVal >= 70) {
+                if (currentActiveDay === userProgress.unlockedUpTo && currentActiveDay < totalDays) {
+                    userProgress.unlockedUpTo = currentActiveDay + 1;
+                    alert(`बधाई हो! आपने ${inputVal}% प्राप्त किए हैं। Day ${currentActiveDay + 1} अनलॉक हो गया है!`);
+                } else if (inputVal >= 70) {
+                    alert(`स्कोर अपडेट हो गया: ${inputVal}%`);
+                }
+            } else {
+                alert(`आपका स्कोर ${inputVal}% है। अगला दिन खोलने के लिए कम से कम 70% लाना ज़रूरी है!`);
+            }
+
+            // डेटा लोकल स्टोरेज में सेव करें
+            localStorage.setItem('neeraj_challenge_progress', JSON.stringify(userProgress));
+
+            closeModal();
+            renderDays();
+        }
+
+        // पेज लोड होने पर रेंडर करें
+        renderDays();
+    </script>
+</body>
+</html>
