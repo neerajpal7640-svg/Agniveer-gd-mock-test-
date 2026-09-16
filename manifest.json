@@ -1,0 +1,10 @@
+{
+  "name": "Agniveer GD 30-Day Mock Test",
+  "short_name": "Agniveer GD",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#164a9c",
+  "description": "Agniveer GD 30-Day Daily Mock Test App",
+  "icons": []
+}
